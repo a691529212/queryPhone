@@ -189,6 +189,21 @@ public class PerformClickUtils {
         }
     }
 
+    public static void setText(AccessibilityService service, String id, String text) {
+        AccessibilityNodeInfo rootInActiveWindow = service.getRootInActiveWindow();
+        List<AccessibilityNodeInfo> nodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId(id);
+        if (null == nodeList || nodeList.isEmpty()) {
+            return;
+        } else {
+            for (AccessibilityNodeInfo nodeInfo : nodeList) {
+                if (nodeInfo != null) {
+                    setText(service, nodeInfo, text);
+                    break;
+                }
+            }
+        }
+    }
+
     /**
      * 设置文本
      */

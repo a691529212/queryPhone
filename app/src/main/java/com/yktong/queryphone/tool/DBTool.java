@@ -3,6 +3,7 @@ package com.yktong.queryphone.tool;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.litesuits.orm.LiteOrm;
 import com.litesuits.orm.db.assit.QueryBuilder;
@@ -61,8 +62,7 @@ public class DBTool {
                 Log.e(TAG, "开始保存");
                 liteOrm.save(dbNumber);
                 Log.e(TAG, "号段保存成功");
-                EventBus.getDefault().post("号段保存成功");
-
+                handler.post(() -> Toast.makeText(MyApp.getmContext(), "号段保存成功", Toast.LENGTH_SHORT).show());
             }
         });
     }

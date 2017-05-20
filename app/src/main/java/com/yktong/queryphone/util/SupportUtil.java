@@ -11,6 +11,7 @@ public class SupportUtil {
     private final String[] SUPPORT_VERSION = new String[]{
             VERSION_6325
     };
+    private String searchItemId;
 
     public SupportUtil(String version) {
         if (version.equals(VERSION_6325)) {
@@ -112,6 +113,7 @@ public class SupportUtil {
         nickNameTvId = "com.tencent.mm:id/gh";
         searchEditId = "com.tencent.mm:id/ag9";
         noSuchTextId = "com.tencent.mm:id/ez";
+        searchItemId = "com.tencent.mm:id/axr";
         checkItemIvId = "com.tencent.mm:id/cl1";
     }
 
@@ -127,6 +129,10 @@ public class SupportUtil {
         createGroupLaunchBtnId = "com.tencent.mm:id/lm";
         quiteGroupBtnId = "android:id/title";
         makeSureQuiteId = "com.tencent.mm:id/abz";
+    }
+
+    public String getSearchItemId() {
+        return searchItemId;
     }
 
     public String getDialog() {
