@@ -3,6 +3,8 @@ package com.yktong.queryphone;
 import android.app.Application;
 import android.content.Context;
 
+import com.yktong.queryphone.tool.exceptioncatch.AbstractCrashReportHandler;
+
 /**
  * Created by Vampire on 2017/4/26.
  */
@@ -13,7 +15,8 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext =this;
+        mContext = this;
+        new AbstractCrashReportHandler(this);
     }
 
     public static Context getmContext() {

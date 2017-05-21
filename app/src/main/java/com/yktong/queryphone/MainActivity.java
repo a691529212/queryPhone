@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements SpValue {
         EditText cityEt = (EditText) findViewById(R.id.city_et);
         cityEt.setHint(city);
         Button downloadBtn = (Button) findViewById(R.id.down_btn);
+//        String d = null;
+//        Log.d("MainActivity", d);
 
         downloadBtn.setOnClickListener(v -> {
             if (!provinceEt.getText().toString().isEmpty()) {
