@@ -54,8 +54,8 @@ public class AccessService extends AccessibilityService implements SpValue {
             }
             tails.add(tail);
         }
-        String[] shell = new String[]{"am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI"};
-        ShellUtils.execCommand(shell, true);
+//        String[] shell = new String[]{"am start -n com.tencent.mm/com.tencent.mm.ui.LauncherUI"};
+//        ShellUtils.execCommand(shell, true);
     }
 
     @Override
