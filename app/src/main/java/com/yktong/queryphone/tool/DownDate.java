@@ -69,7 +69,6 @@ public class DownDate {
                 for (String s : request) {
                     Log.d(TAG, s);
                     String[] split = s.split(",");
-                    // TODO: 2016/12/16  数组越界
                     for (int i = 0; i < split.length; i++) {
                         DbNumber dbNumber = new DbNumber(split[1], split[2], split[0]);
                         dbNumbers.add(dbNumber);

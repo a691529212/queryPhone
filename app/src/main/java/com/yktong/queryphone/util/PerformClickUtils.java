@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 
@@ -36,6 +37,7 @@ public class PerformClickUtils {
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null && (text.equals(nodeInfo.getText()) || text.equals(nodeInfo.getContentDescription()))) {
+                    Log.d("PerformClickUtils", "vampire-click");
                     performClick(nodeInfo);
                     break;
                 }
@@ -190,12 +192,21 @@ public class PerformClickUtils {
     }
 
     public static void setText(AccessibilityService service, String id, String text) {
-        AccessibilityNodeInfo rootInActiveWindow = service.getRootInActiveWindow();
-        List<AccessibilityNodeInfo> nodeList = rootInActiveWindow.findAccessibilityNodeInfosByViewId(id);
-        if (null == nodeList || nodeList.isEmpty()) {
+        AccessibilityNodeInfo accessibilityNodeInfo = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            accessibilityNodeInfo = service.getRootInActiveWindow();
+        }
+        if (accessibilityNodeInfo == null) {
+            return;
+        }
+        List<AccessibilityNodeInfo> nodeInfoList = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
+        }
+        if (null == nodeInfoList || nodeInfoList.isEmpty()) {
             return;
         } else {
-            for (AccessibilityNodeInfo nodeInfo : nodeList) {
+            for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
                 if (nodeInfo != null) {
                     setText(service, nodeInfo, text);
                     break;
@@ -250,17 +261,16 @@ public class PerformClickUtils {
 
     public static String getDesc(AccessibilityService service, String wightId) {
         AccessibilityNodeInfo accessibilityNodeInfo = service.getRootInActiveWindow();
-        if (accessibilityNodeInfo == null) {
-            return null;
-        }
-        List<AccessibilityNodeInfo> wightList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(wightId);
-        if (!wightId.isEmpty()) {
-            for (AccessibilityNodeInfo wight : wightList) {
-                if (wight != null) {
-                    return wight.getContentDescription().toString();
+        if (accessibilityNodeInfo != null) {
+            List<AccessibilityNodeInfo> wightList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(wightId);
+            if (!wightList.isEmpty()) {
+                for (AccessibilityNodeInfo wight : wightList) {
+                    if (wight != null) {
+                        return wight.getContentDescription().toString();
+                    }
                 }
             }
         }
-        return null;
+        return "";
     }
 }

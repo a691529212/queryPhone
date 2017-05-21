@@ -111,7 +111,7 @@ public class SupportUtil {
         whoCanSeeItemId = "com.tencent.mm:id/cok";
         sendRequestBtnId = "com.tencent.mm:id/gd";
         nickNameTvId = "com.tencent.mm:id/gh";
-        searchEditId = "com.tencent.mm:id/ag9";
+        searchEditId = "com.tencent.mm:id/gr";
         noSuchTextId = "com.tencent.mm:id/ez";
         searchItemId = "com.tencent.mm:id/axr";
         checkItemIvId = "com.tencent.mm:id/cl1";

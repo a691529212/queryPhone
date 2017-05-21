@@ -1,6 +1,7 @@
 package com.yktong.queryphone.plugin;
 
 import android.accessibilityservice.AccessibilityService;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ import static com.yktong.queryphone.service.AccessService.sleep;
  */
 
 public class QueryPhone implements SpValue {
-
+    private final static String TAG = "QueryPhone-vampire";
     private static QueryPhone instence;
     private ArrayList<DbNumber> numberHeads;
     private ArrayList<String> tails;
@@ -46,7 +47,9 @@ public class QueryPhone implements SpValue {
 
     private void prepare() {
         headIndex = (int) SPUtil.get(MyApp.getmContext(), city, 0); //  --
+        Log.d(TAG, "headIndex:" + headIndex);
         index = (int) SPUtil.get(MyApp.getmContext(), QUERT_INDEX, 0); // ++
+        Log.d(TAG, "index:" + index);
     }
 
     public static QueryPhone getInstence(ArrayList<DbNumber> numberHeads, AccessibilityService mService, ArrayList<String> tails, SupportUtil supportUtil)
@@ -63,15 +66,23 @@ public class QueryPhone implements SpValue {
     }
 
     public void queryNum(String className, AccessibilityEvent event) {
+        Log.d(TAG, className);
         if (className.equals(mSupportUtil.getLauncherUI())) {
+            Log.d(TAG, "点击搜索");
             PerformClickUtils.findTextAndClick(mService, "搜索");
         } else if (className.equals(mSupportUtil.getSearchUI())) {
-            prepare();
-            PerformClickUtils.findViewIdAndClick(mService, mSupportUtil.getfTSMainUICleanEtId(), "清除");
             sleep(500);
-            num = numberHeads.get(headIndex) + tails.get(index);
+            prepare();
+            String desc = PerformClickUtils.getDesc(mService, mSupportUtil.getfTSMainUICleanEtId());
+            Log.d(TAG, desc);
+            if (desc.equals("清除")) {
+                PerformClickUtils.findViewIdAndClick(mService, mSupportUtil.getfTSMainUICleanEtId(), "清除");
+                sleep(500);
+            }
+            num = numberHeads.get(headIndex).getNumber() + tails.get(index);
             PerformClickUtils.setText(mService, mSupportUtil.getSearchEditId(), num);
-            sleep(1000);
+            Log.d(TAG, "输入" + num);
+            sleep(500);
             PerformClickUtils.findViewIdAndClick(mService, mSupportUtil.getSearchItemId());
         } else if (className.equals(mSupportUtil.getContactInfoUI())) {
             saveToFile();
@@ -80,31 +91,30 @@ public class QueryPhone implements SpValue {
             String hint = PerformClickUtils.getText(mService, hintId);
             if (hint.equals("操作过于频繁，请稍后再试")) {
                 saveToFile();
-            } else {
-                index = index++;
-                if (index >= 10000) {
-                    SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, 0);
-                    SPUtil.putAndApply(MyApp.getmContext(), city, headIndex--);
-                } else {
-                    SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, index);
-                }
-                PerformClickUtils.performBack(mService);
-                sleep(500);
             }
+            Log.d(TAG, "index:++" + index);
+            if (index + 1 >= 10000) {
+                SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, 0);
+                SPUtil.putAndApply(MyApp.getmContext(), city, headIndex - 1);
+            } else {
+                SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, index + 1);
+            }
+            PerformClickUtils.performBack(mService);
+            sleep(500);
         }
 
     }
 
     private void saveToFile() {
         String info = province + "-" + city + "-" + num + "\n";
-        WriteFileUtil.wrieFileByFileOutputStream(info, province + "-" + city);
+        WriteFileUtil.wrieFileByBufferedWriter(info, province + "-" + city);
         PerformClickUtils.performBack(mService);
         index = index++;
         if (index >= 10000) {
             SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, 0);
-            SPUtil.putAndApply(MyApp.getmContext(), city, headIndex--);
+            SPUtil.putAndApply(MyApp.getmContext(), city, headIndex-1);
         } else {
-            SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, index);
+            SPUtil.putAndApply(MyApp.getmContext(), QUERT_INDEX, index + 1);
         }
         sleep(500);
     }

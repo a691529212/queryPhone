@@ -68,23 +68,29 @@ public class DBTool {
     }
 
     // 通过省市查号段
-    public void queryNumberByCity(final String city, final QueryListener queryListener) {
+    public ArrayList<DbNumber> queryNumberByCity(final String city) {
+        ArrayList<DbNumber> query;
         Log.d("AddFriendFragment", "start-query");
-        threadPool.execute(new Runnable() {
-            private ArrayList<DbNumber> query;
+        if (city == null) {
+            query = liteOrm.query(DbNumber.class);
+        } else {
+            query = liteOrm.query(new QueryBuilder<DbNumber>(DbNumber.class)
+                    .whereEquals("city", city));
+        }
+        return query;
+    }
 
-            @Override
-            public void run() {
-                if (city == null) {
-                    query = liteOrm.query(DbNumber.class);
-                } else {
-                    query = liteOrm.query(new QueryBuilder<DbNumber>(DbNumber.class)
-                            .whereEquals("city", city));
-                }
-
-                Log.d("AddFriendFragment", "query.size():" + query.size());
-                handler.post(new HandlerRunnable(queryListener, query));
+    public void queryNumberByCity(String city, QueryListener listener) {
+        threadPool.execute(() -> {
+            ArrayList<DbNumber> query;
+            Log.d("AddFriendFragment", "start-query");
+            if (city == null) {
+                query = liteOrm.query(DbNumber.class);
+            } else {
+                query = liteOrm.query(new QueryBuilder<DbNumber>(DbNumber.class)
+                        .whereEquals("city", city));
             }
+            handler.post(() -> listener.onQueryListener(query));
         });
     }
 
